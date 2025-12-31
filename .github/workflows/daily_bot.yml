@@ -1,0 +1,34 @@
+name: Daily Meeting Bot
+
+on:
+  schedule:
+    # 毎日 日本時間 09:00 (UTC 00:00) に実行
+    - cron: '0 0 * * *'
+  workflow_dispatch: # 手動実行ボタンを作成
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run bot
+        env:
+          GOOGLE_CALENDAR_ID: ${{ secrets.GOOGLE_CALENDAR_ID }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_PAGE_ID: ${{ secrets.NOTION_PAGE_ID }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          # 秘密鍵ファイルを一時的に復元
+          echo '${{ secrets.GOOGLE_CREDENTIAL_JSON }}' > google_credential.json
+          python main.py

@@ -3,3 +3,10 @@ google_credential.json
 venv/
 __pycache__/
 .DS_Store
+
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa
+id_ed25519
